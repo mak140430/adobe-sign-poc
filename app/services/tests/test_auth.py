@@ -23,8 +23,8 @@ async def test_auth_flow():
     try:
         token_data = await auth_service.exchange_code_for_token(code)
         print("\n=== Token Data ===")
-        print(f"Access Token: {token_data['access_token'][:10]}...")
-        print(f"Refresh Token: {token_data['refresh_token'][:10]}...")
+        print(f"Access Token: {token_data['access_token']}")
+        print(f"Refresh Token: {token_data['refresh_token']}")
         print(f"Expires In: {token_data.get('expires_in')} seconds")
         print("\nAuthentication successful!")
     except Exception as e:

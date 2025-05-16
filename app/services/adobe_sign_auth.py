@@ -1,6 +1,7 @@
 import httpx
 from fastapi import HTTPException
 from urllib.parse import urlencode
+import os
 
 from app.config import settings
 
@@ -20,7 +21,8 @@ class AdobeSignAuth:
         self.client_id = settings.ADOBE_SIGN_CLIENT_ID
         self.client_secret = settings.ADOBE_SIGN_CLIENT_SECRET
         self.redirect_uri = settings.ADOBE_SIGN_REDIRECT_URI
-        self.access_token = None
+        # TODO: Remove this (for testing)
+        self.access_token = os.getenv("ADOBE_SIGN_ACCESS_TOKEN")
         self.refresh_token = None
 
     def get_authorization_url(self):
