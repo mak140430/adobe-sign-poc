@@ -1,8 +1,9 @@
 from fastapi import FastAPI, HTTPException, Body, Query, Depends, UploadFile, File
 from fastapi.responses import JSONResponse, RedirectResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, validator, Field
 import os
-from typing import Optional
+from typing import Optional, List
+import re
 
 from app.services.adobe_sign_auth import auth_service
 from app.services.adobe_sign_library import adobe_sign_transient_service, MAX_FILE_SIZE
@@ -20,8 +21,31 @@ class UploadResponse(BaseModel):
 
 class CreateAgreementRequest(BaseModel):
     transient_document_id: str
-    recipient_email: str
+    recipient_emails: List[str]
     agreement_name: str = "Agreement"
+    
+    @validator('recipient_emails')
+    def validate_emails(cls, emails):
+        # Validate email format
+        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        invalid_emails = []
+        
+        for email in emails:
+            if not re.match(email_regex, email):
+                invalid_emails.append(email)
+        
+        if invalid_emails:
+            raise ValueError(f"Invalid email format for: {', '.join(invalid_emails)}")
+        
+        # Validate array length - maximum 2 recipients
+        if len(emails) > 2:
+            raise ValueError(f"Maximum 2 recipients allowed, but {len(emails)} were provided")
+        
+        # Ensure at least 1 recipient
+        if len(emails) == 0:
+            raise ValueError("At least one recipient email is required")
+            
+        return emails
 
 @app.get("/")
 async def root():
@@ -56,11 +80,11 @@ async def upload_document_file(file: UploadFile = File(...)):
 # Agreement routes
 @app.post("/agreements/create")
 async def create_agreement(request: CreateAgreementRequest):
-    """Create an agreement and send it for signing"""
+    """Create an agreement and send it for signing to multiple recipients"""
     try:
         result = adobe_sign_agreement_service.create_agreement(
             request.transient_document_id,
-            request.recipient_email,
+            request.recipient_emails,
             agreement_name=request.agreement_name
         )
         return result

@@ -1,11 +1,32 @@
 import requests
 from fastapi import HTTPException
 from app.services.adobe_sign_auth import auth_service
+from typing import List
 
 class AdobeSignAgreementService:
-    def create_agreement(self, transient_document_id: str, recipient_email: str, agreement_name: str = "Test Agreement"):
+    def create_agreement(self, transient_document_id: str, recipient_emails: List[str], agreement_name: str = "Test Agreement"):
+        """
+        Create an agreement with Adobe Sign and send it to multiple recipients
+        
+        Args:
+            transient_document_id: The ID of the uploaded document
+            recipient_emails: List of recipient email addresses
+            agreement_name: Name of the agreement
+            
+        Returns:
+            The created agreement information
+        """
         if not auth_service.access_token:
             raise HTTPException(status_code=401, detail="Not authenticated with Adobe Sign.")
+
+        # Build participant sets with proper order
+        participant_sets = []
+        for i, email in enumerate(recipient_emails):
+            participant_sets.append({
+                "memberInfos": [{"email": email}],
+                "order": i + 1,
+                "role": "SIGNER"
+            })
 
         url = f"{auth_service.base_uri}api/rest/v6/agreements"
         headers = {
@@ -18,13 +39,7 @@ class AdobeSignAgreementService:
                 {"transientDocumentId": transient_document_id}
             ],
             "name": agreement_name,
-            "participantSetsInfo": [
-                {
-                    "memberInfos": [{"email": recipient_email}],
-                    "order": 1,
-                    "role": "SIGNER"
-                }
-            ],
+            "participantSetsInfo": participant_sets,
             "signatureType": "ESIGN",
             "state": "IN_PROCESS",
             "emailOption": {
