@@ -36,5 +36,23 @@ class AdobeSignAgreementService:
                 detail=f"Failed to create agreement: {response.text}"
             )
         return response.json()
+    
+    def get_agreement(self, agreement_id: str):
+        """Get agreement details by ID"""
+        if not auth_service.access_token:
+            raise HTTPException(status_code=401, detail="Not authenticated with Adobe Sign.")
+        
+        url = f"{auth_service.base_uri}api/rest/v6/agreements/{agreement_id}"
+        headers = {
+            "Authorization": f"Bearer {auth_service.access_token}"
+        }
+        
+        response = requests.get(url, headers=headers)
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Failed to get agreement: {response.text}"
+            )
+        return response.json()
 
 adobe_sign_agreement_service = AdobeSignAgreementService()
