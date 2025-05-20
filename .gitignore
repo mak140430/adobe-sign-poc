@@ -39,4 +39,4 @@ dist/
 *.egg-info/
 
 # Adobe Sign specific
-# Add any project-specific files that contain sensitive information
+# Add any project-specific files that contain sensitive information.env
