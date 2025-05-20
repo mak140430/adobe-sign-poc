@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+key.pem
+cert.pem
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+.directory
+
+# Logs and local data
+*.log
+/tmp/
+logs/
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Adobe Sign specific
+# Add any project-specific files that contain sensitive information

@@ -11,7 +11,7 @@ class Settings:
     ADOBE_SIGN_SCOPES = os.getenv("ADOBE_SIGN_SCOPES")
     
     # Adobe Sign API endpoints
-    ADOBE_SIGN_BASE_URI = os.getenv("ADOBE_SIGN_BASE_URI", "https://api.na4.adobesign.com/")
-    ADOBE_SIGN_WEB_URI = os.getenv("ADOBE_SIGN_WEB_URI", "https://secure.na4.adobesign.com/")
+    ADOBE_SIGN_BASE_URI = os.getenv("ADOBE_SIGN_BASE_URI")
+    ADOBE_SIGN_WEB_URI = os.getenv("ADOBE_SIGN_WEB_URI")
 
 settings = Settings()

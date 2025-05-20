@@ -26,7 +26,17 @@ class AdobeSignAgreementService:
                 }
             ],
             "signatureType": "ESIGN",
-            "state": "IN_PROCESS"
+            "state": "IN_PROCESS",
+            "emailOption": {
+                "sendOptions": {
+                    "completionEmails": "ALL",
+                    "inFlightEmails": "ALL",
+                    "initEmails": "ALL"
+                }
+            },
+            "authOptions": {
+                "noAuthRequired": True
+            }
         }
 
         response = requests.post(url, headers=headers, json=payload)
